@@ -2335,17 +2335,11 @@
 						]
 					},
 					{
-						"name": "Sp_LogSccess",
+						"name": "Sp_LogSuccess",
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [
 							{
-								"activity": "Copy_properties",
-								"dependencyConditions": [
-									"Succeeded"
-								]
-							},
-							{
-								"activity": "Copy_Leads",
+								"activity": "Copy_Agents",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2369,7 +2363,7 @@
 								]
 							},
 							{
-								"activity": "Copy_Viewings",
+								"activity": "Copy_properties",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2381,7 +2375,13 @@
 								]
 							},
 							{
-								"activity": "Copy_Agents",
+								"activity": "Copy_Viewings",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							},
+							{
+								"activity": "Copy_Leads",
 								"dependencyConditions": [
 									"Succeeded"
 								]
@@ -2389,7 +2389,7 @@
 						],
 						"policy": {
 							"timeout": "0.00:30:00",
-							"retry": 1,
+							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
 							"secureInput": false
@@ -2398,8 +2398,62 @@
 						"typeProperties": {
 							"storedProcedureName": "[[stg].[usp_Log_PipelineRun]",
 							"storedProcedureParameters": {
-								"value": "PipelineName = @{pipeline().Pipeline}\nRunID = @{pipeline().RunId}\nStatus = Success\nStartTime = @{variables('PipelineStartTime')}\nEndTime = @{utcNow()}",
-								"type": "Expression"
+								"PipelineName": {
+									"value": {
+										"value": "@{pipeline().Pipeline}",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"RunID": {
+									"value": {
+										"value": "@{pipeline().RunId}",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"SourceTabel": {
+									"value": "Blob_RawFlies",
+									"type": "String"
+								},
+								"TargetTable": {
+									"value": "stgAllTables",
+									"type": "String"
+								},
+								"RowsRead": {
+									"value": "",
+									"type": "Int32"
+								},
+								"RowsLoaded": {
+									"value": "",
+									"type": "Int32"
+								},
+								"RowsRejected": {
+									"value": "",
+									"type": "Int32"
+								},
+								"Status": {
+									"value": "Success",
+									"type": "String"
+								},
+								"Error Message ": {
+									"value": "NO Errors",
+									"type": "String"
+								},
+								"Starttime": {
+									"value": {
+										"value": "@{variables('PipelineStartTime')}",
+										"type": "Expression"
+									},
+									"type": "Datetime"
+								},
+								"EndTime": {
+									"value": {
+										"value": "@{utcNow()}",
+										"type": "Expression"
+									},
+									"type": "Datetime"
+								}
 							}
 						},
 						"linkedServiceName": {
@@ -2408,17 +2462,11 @@
 						}
 					},
 					{
-						"name": "Sp_logFailure",
+						"name": "Sp_LogFailures",
 						"type": "SqlServerStoredProcedure",
 						"dependsOn": [
 							{
-								"activity": "Copy_Leads",
-								"dependencyConditions": [
-									"Failed"
-								]
-							},
-							{
-								"activity": "Copy_properties",
+								"activity": "Copy_Agents",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -2436,7 +2484,13 @@
 								]
 							},
 							{
-								"activity": "Copy_Agents",
+								"activity": "Copy_Offers",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "Copy_properties",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -2454,7 +2508,7 @@
 								]
 							},
 							{
-								"activity": "Copy_Offers",
+								"activity": "Copy_Leads",
 								"dependencyConditions": [
 									"Failed"
 								]
@@ -2471,8 +2525,65 @@
 						"typeProperties": {
 							"storedProcedureName": "[[stg].[usp_Log_PipelineRun]",
 							"storedProcedureParameters": {
-								"value": "Status = Failed\nPipelineName = @{pipeline().Pipeline}\nRunID = @{pipeline().RunId}",
-								"type": "Expression"
+								"PipelineName": {
+									"value": {
+										"value": "@{pipeline().Pipeline}",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"RunID": {
+									"value": {
+										"value": "@{pipeline().RunId}",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"SourceTable": {
+									"value": "Blob_RawFiles",
+									"type": "String"
+								},
+								"TargetTable": {
+									"value": "stg.AllTables",
+									"type": "String"
+								},
+								"RowsRead": {
+									"value": "",
+									"type": "Int32"
+								},
+								"RowsLoaded ": {
+									"value": "",
+									"type": "Int32"
+								},
+								"RowsRejected ": {
+									"value": "",
+									"type": "Int32"
+								},
+								"Status ": {
+									"value": "Failed ",
+									"type": "String"
+								},
+								"ErrorMessage": {
+									"value": {
+										"value": "@{activity('Copy_Agents').error?.message}",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"StartTime": {
+									"value": {
+										"value": "@{variables('PipelineStartTime')}",
+										"type": "Expression"
+									},
+									"type": "Datetime"
+								},
+								"EndTime": {
+									"value": {
+										"value": "@{utcNow()}",
+										"type": "Expression"
+									},
+									"type": "Datetime"
+								}
 							}
 						},
 						"linkedServiceName": {
