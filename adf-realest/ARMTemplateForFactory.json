@@ -33,7 +33,7 @@
 	},
 	"resources": [
 		{
-			"name": "[concat(parameters('factoryName'), '/pl_IngestRawToStaqinq')]",
+			"name": "[concat(parameters('factoryName'), '/pl_IngestRawToString')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -50,7 +50,7 @@
 						"typeProperties": {
 							"variableName": "PipelineStartTime",
 							"value": {
-								"value": "@u",
+								"value": "@utcNow()",
 								"type": "Expression"
 							}
 						}
@@ -1382,8 +1382,11 @@
 									},
 									"type": "String"
 								},
-								"SourceTabel": {
-									"value": "Blob_RawFlies",
+								"SourceTable ": {
+									"value": {
+										"value": "Blob_RawFiles",
+										"type": "Expression"
+									},
 									"type": "String"
 								},
 								"TargetTable": {
@@ -1391,22 +1394,22 @@
 									"type": "String"
 								},
 								"RowsRead": {
-									"value": "",
+									"value": "0",
 									"type": "Int32"
 								},
 								"RowsLoaded": {
-									"value": "",
+									"value": "0",
 									"type": "Int32"
 								},
 								"RowsRejected": {
-									"value": "",
+									"value": "0",
 									"type": "Int32"
 								},
 								"Status": {
 									"value": "Success",
 									"type": "String"
 								},
-								"Error Message ": {
+								"ErrorMessage ": {
 									"value": "NO Errors",
 									"type": "String"
 								},
@@ -1518,15 +1521,15 @@
 									"type": "String"
 								},
 								"RowsRead": {
-									"value": "",
+									"value": "0",
 									"type": "Int32"
 								},
 								"RowsLoaded ": {
-									"value": "",
+									"value": "0",
 									"type": "Int32"
 								},
 								"RowsRejected ": {
-									"value": "",
+									"value": "0",
 									"type": "Int32"
 								},
 								"Status ": {
