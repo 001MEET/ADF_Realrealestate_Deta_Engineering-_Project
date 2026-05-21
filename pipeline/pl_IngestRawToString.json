@@ -1,5 +1,5 @@
 {
-	"name": "pl_IngestRawToStaqinq",
+	"name": "pl_IngestRawToString",
 	"properties": {
 		"activities": [
 			{
