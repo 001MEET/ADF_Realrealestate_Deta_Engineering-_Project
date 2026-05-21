@@ -1,0 +1,60 @@
+{
+	"name": "Ds_Blob_Properties",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_Blob",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Blob_csv"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Properties_clean.csv",
+				"folderPath": "Properties",
+				"container": "raw-data"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "PropertyID",
+				"type": "String"
+			},
+			{
+				"name": "Region",
+				"type": "String"
+			},
+			{
+				"name": "City",
+				"type": "String"
+			},
+			{
+				"name": "PropertyType",
+				"type": "String"
+			},
+			{
+				"name": "Bedrooms",
+				"type": "String"
+			},
+			{
+				"name": "Bathrooms",
+				"type": "String"
+			},
+			{
+				"name": "AreaSqft",
+				"type": "String"
+			},
+			{
+				"name": "YearBuilt",
+				"type": "String"
+			}
+		]
+	}
+}
