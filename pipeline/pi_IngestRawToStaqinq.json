@@ -1361,11 +1361,17 @@
 							"type": "String"
 						},
 						"Starttime": {
-							"value": "@{variables('PipelineStartTime')}",
+							"value": {
+								"value": "@{variables('PipelineStartTime')}",
+								"type": "Expression"
+							},
 							"type": "Datetime"
 						},
 						"EndTime": {
-							"value": "@{utcNow()}",
+							"value": {
+								"value": "@{utcNow()}",
+								"type": "Expression"
+							},
 							"type": "Datetime"
 						}
 					}
@@ -1485,11 +1491,17 @@
 							"type": "String"
 						},
 						"StartTime": {
-							"value": "@{variables('PipelineStartTime')}",
+							"value": {
+								"value": "@{variables('PipelineStartTime')}",
+								"type": "Expression"
+							},
 							"type": "Datetime"
 						},
 						"EndTime": {
-							"value": "@{utcNow()}",
+							"value": {
+								"value": "@{utcNow()}",
+								"type": "Expression"
+							},
 							"type": "Datetime"
 						}
 					}
