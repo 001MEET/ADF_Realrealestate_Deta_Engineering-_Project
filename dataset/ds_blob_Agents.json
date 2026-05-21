@@ -13,6 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "Agents_clean.csv",
 				"folderPath": "Agents",
 				"container": "raw-data"
 			},

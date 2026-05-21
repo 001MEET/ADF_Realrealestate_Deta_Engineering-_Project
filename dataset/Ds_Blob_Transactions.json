@@ -13,6 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "Transactions_clean.csv",
 				"folderPath": "Transactions",
 				"container": "raw-data"
 			},
