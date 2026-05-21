@@ -1,0 +1,15 @@
+{
+	"name": "adf-realest",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Enabled",
+			"editable": true
+		}
+	},
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "2d4c9f3e-6004-48b3-b4cd-ea0383a6c8d3",
+		"tenantId": "d1b99a31-59dc-4039-b9c4-f6166b6bf0a4"
+	}
+}
