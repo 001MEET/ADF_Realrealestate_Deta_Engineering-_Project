@@ -14,7 +14,7 @@
 				"typeProperties": {
 					"variableName": "PipelineStartTime",
 					"value": {
-						"value": "@u",
+						"value": "@utcNow()",
 						"type": "Expression"
 					}
 				}
@@ -1330,8 +1330,11 @@
 							},
 							"type": "String"
 						},
-						"SourceTabel": {
-							"value": "Blob_RawFlies",
+						"SourceTable ": {
+							"value": {
+								"value": "Blob_RawFiles",
+								"type": "Expression"
+							},
 							"type": "String"
 						},
 						"TargetTable": {
@@ -1339,15 +1342,15 @@
 							"type": "String"
 						},
 						"RowsRead": {
-							"value": "",
+							"value": "0",
 							"type": "Int32"
 						},
 						"RowsLoaded": {
-							"value": "",
+							"value": "0",
 							"type": "Int32"
 						},
 						"RowsRejected": {
-							"value": "",
+							"value": "0",
 							"type": "Int32"
 						},
 						"Status": {
@@ -1466,15 +1469,15 @@
 							"type": "String"
 						},
 						"RowsRead": {
-							"value": "",
+							"value": "0",
 							"type": "Int32"
 						},
 						"RowsLoaded ": {
-							"value": "",
+							"value": "0",
 							"type": "Int32"
 						},
 						"RowsRejected ": {
-							"value": "",
+							"value": "0",
 							"type": "Int32"
 						},
 						"Status ": {
