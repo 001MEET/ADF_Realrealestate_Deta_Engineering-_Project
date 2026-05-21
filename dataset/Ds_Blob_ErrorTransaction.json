@@ -1,0 +1,22 @@
+{
+	"name": "Ds_Blob_ErrorTransaction",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "ls_Blob",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "error-log"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

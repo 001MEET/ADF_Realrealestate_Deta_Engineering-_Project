@@ -1,0 +1,116 @@
+{
+	"name": "df_Validat_Transaction",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Ds_stg_Transactions",
+						"type": "DatasetReference"
+					},
+					"name": "SourceTransaction"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Ds_stg_Transactions",
+						"type": "DatasetReference"
+					},
+					"name": "SinkValidRows"
+				},
+				{
+					"dataset": {
+						"referenceName": "Ds_Blob_ErrorTransaction",
+						"type": "DatasetReference"
+					},
+					"name": "SinkErrorRows"
+				}
+			],
+			"transformations": [
+				{
+					"name": "Addvalidflag"
+				},
+				{
+					"name": "ValidRows"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          TransactionID as string,",
+				"          ListingID as string,",
+				"          AgentID as string,",
+				"          PropertyID as string,",
+				"          OfferDate as string,",
+				"          ClosingDate as string,",
+				"          SalePrice as string,",
+				"          stg_LoadDate as timestamp,",
+				"          stg_FileName as string,",
+				"          stg_IsValid as boolean",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceTransaction",
+				"SourceTransaction derive(IsValid = iif(   !isNull(TransactionID)   && !isNull(SalePrice)   && toFloat(SalePrice) > 0   && !isNull(OfferDate)   && !isNull(ClosingDate),   1, 0 ),",
+				"          DaysToClose = toInteger(toDate(ClosingDate) - toDate(OfferDate))) ~> Addvalidflag",
+				"Addvalidflag split(IsValid==1,",
+				"     disjoint: false) ~> ValidRows@(ValidRows, InValidRows)",
+				"ValidRows@ValidRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          TransactionID as string,",
+				"          ListingID as string,",
+				"          AgentID as string,",
+				"          PropertyID as string,",
+				"          OfferDate as string,",
+				"          ClosingDate as string,",
+				"          SalePrice as string,",
+				"          stg_LoadDate as timestamp,",
+				"          stg_FileName as string,",
+				"          stg_IsValid as boolean",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          TransactionID,",
+				"          ListingID,",
+				"          AgentID,",
+				"          PropertyID,",
+				"          OfferDate,",
+				"          ClosingDate,",
+				"          SalePrice,",
+				"          stg_LoadDate,",
+				"          stg_FileName,",
+				"          stg_IsValid",
+				"     )) ~> SinkValidRows",
+				"ValidRows@InValidRows sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     mapColumn(",
+				"          TransactionID,",
+				"          ListingID,",
+				"          AgentID,",
+				"          PropertyID,",
+				"          OfferDate,",
+				"          ClosingDate,",
+				"          SalePrice,",
+				"          stg_LoadDate,",
+				"          stg_FileName,",
+				"          stg_IsValid,",
+				"          IsValid,",
+				"          DaysToClose",
+				"     )) ~> SinkErrorRows"
+			]
+		}
+	}
+}
