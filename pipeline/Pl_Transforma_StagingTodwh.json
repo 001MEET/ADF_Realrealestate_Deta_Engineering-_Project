@@ -1,0 +1,534 @@
+{
+	"name": "Pl_Transforma_StagingTodwh",
+	"properties": {
+		"activities": [
+			{
+				"name": "Sp_LoadDimDate",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Set_Start_Time",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dwh].[usp_Load_dim_Date]"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_SQLStorage",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Sp_LoadDimAgents",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Set_Start_Time",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dwh].[usp_Load_dim_Agent]"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_SQLStorage",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Sp_LoadDimCampaigns",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Set_Start_Time",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dwh].[usp_Load_dim_Campaign]"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_SQLStorage",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Sp_LoadDimListings",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Set_Start_Time",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dwh].[usp_Load_dim_Listing]"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_SQLStorage",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Sp_LoadDimProperties",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Set_Start_Time",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dwh].[usp_Load_dim_Property]"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_SQLStorage",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Set_Start_Time",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "PipelineStartTime",
+					"value": {
+						"value": "@utcNow()",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Sp_LoadFactSales",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Sp_LoadDimDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Sp_LoadDimAgents",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Sp_LoadDimCampaigns",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Sp_LoadDimListings",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Sp_LoadDimProperties",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dwh].[usp_Load_fact_Sales]"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_SQLStorage",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Sp_LoadFactoffers",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Sp_LoadFactSales",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dwh].[usp_Load_fact_Offers]"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_SQLStorage",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Sp_LoadFactLeads",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Sp_LoadFactoffers",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[dwh].[usp_Load_fact_Leads]"
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_SQLStorage",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "LKP_RowCount",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Sp_LoadFactLeads",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "SELECT \n    (SELECT COUNT(*) FROM dwh.fact_Sales)    +\n    (SELECT COUNT(*) FROM dwh.fact_Leads)    +\n    (SELECT COUNT(*) FROM dwh.fact_Viewings) +\n    (SELECT COUNT(*) FROM dwh.fact_Offers)   AS [RowCount]",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "Ds_stg_Transactions",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "IF_RowCountCheck",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "LKP_RowCount",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('LKP_RowCount').output.firstRow.RowCount, 0)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail_EmptyFact",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Fact Table is EmpEmpty After Load",
+								"errorCode": "EMPTY_FACT_TABLE"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set_Success",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "PipelineStartTime",
+								"value": {
+									"value": "success",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Sp_LogSuccess",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "IF_RowCountCheck",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[stg].[usp_Log_PipelineRun]",
+					"storedProcedureParameters": {
+						"Pipelinename": {
+							"value": {
+								"value": "@{pipeline().Pipeline}",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"RunID": {
+							"value": {
+								"value": "@{pipeline().RunId}",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"sourceTable": {
+							"value": {
+								"value": "stg.AllTables",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TargetTable": {
+							"value": {
+								"value": "dwh.Facts",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"RowsRead": {
+							"value": "0",
+							"type": "Int32"
+						},
+						"RowsLoaded": {
+							"value": "0",
+							"type": "Int32"
+						},
+						"RowsRejected": {
+							"value": "0",
+							"type": "Int32"
+						},
+						"Status ": {
+							"value": "Success",
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": "No errors",
+							"type": "String"
+						},
+						"StartTime": {
+							"value": {
+								"value": "@utcNow()",
+								"type": "Expression"
+							},
+							"type": "Datetime"
+						},
+						"EndTime": {
+							"value": "@{utcNow()}",
+							"type": "Datetime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_SQLStorage",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Sp_LogFailure",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Sp_LoadFactoffers",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Sp_LoadFactLeads",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Sp_LoadFactSales",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.00:30:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[stg].[usp_Log_PipelineRun]",
+					"storedProcedureParameters": {
+						"Pipelinename": {
+							"value": "@{pipeline().Pipeline}",
+							"type": "String"
+						},
+						"RunID": {
+							"value": "@{pipeline().RunId}",
+							"type": "String"
+						},
+						"SourceTable": {
+							"value": {
+								"value": "stg.AllTables",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TargetTable": {
+							"value": {
+								"value": "dwh.Facts",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"RowsRead": {
+							"value": "0",
+							"type": "Int32"
+						},
+						"RowsLoaded": {
+							"value": "0",
+							"type": "Int32"
+						},
+						"RowsRejected": {
+							"value": "0",
+							"type": "Int32"
+						},
+						"Status ": {
+							"value": "Failure ",
+							"type": "String"
+						},
+						"ErrorMessage": {
+							"value": "PipelineToFailed",
+							"type": "String"
+						},
+						"StartTime": {
+							"value": "@{variables('PipelineStartTime')}",
+							"type": "Datetime"
+						},
+						"EndTime": {
+							"value": "@{utcNow()}",
+							"type": "Datetime"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "ls_SQLStorage",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"variables": {
+			"PipelineStartTime": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
