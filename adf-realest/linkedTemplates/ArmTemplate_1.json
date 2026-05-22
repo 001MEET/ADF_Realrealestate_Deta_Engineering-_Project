@@ -1679,6 +1679,163 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PL_Master_RealEstate_ETL')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Run_Ingest",
+						"type": "ExecutePipeline",
+						"dependsOn": [],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "pl_IngestRawToString",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Run_Transorm",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Run_Ingest",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Pl_Transforma_StagingTodwh",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
+					},
+					{
+						"name": "Sp_LogFailure",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "Run_Ingest",
+								"dependencyConditions": [
+									"Failed"
+								]
+							},
+							{
+								"activity": "Run_Transorm",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.00:30:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[stg].[usp_Log_PipelineRun]",
+							"storedProcedureParameters": {
+								"Pipelinename": {
+									"value": {
+										"value": "@{pipeline().Pipeline}",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"RunID": {
+									"value": {
+										"value": "@{pipeline().RunId}",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"SourceTable": {
+									"value": {
+										"value": "stg.AllTables",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"TargetTable": {
+									"value": {
+										"value": "dwh.Facts",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"RowsRead": {
+									"value": "0",
+									"type": "Int32"
+								},
+								"RowsLoaded": {
+									"value": "0",
+									"type": "Int32"
+								},
+								"RowsRejected": {
+									"value": "0",
+									"type": "Int32"
+								},
+								"Status ": {
+									"value": "Failed ",
+									"type": "String"
+								},
+								"ErrorMessage": {
+									"value": {
+										"value": "@{activity('RUN_Ingest').error?.message}",
+										"type": "Expression"
+									},
+									"type": "String"
+								},
+								"StartTime": {
+									"value": {
+										"value": "@utcNow()",
+										"type": "Expression"
+									},
+									"type": "Datetime"
+								},
+								"EndTime": {
+									"value": {
+										"value": "@{utcNow()}",
+										"type": "Expression"
+									},
+									"type": "Datetime"
+								}
+							}
+						},
+						"linkedServiceName": {
+							"referenceName": "ls_SQLStorage",
+							"type": "LinkedServiceReference"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/pl_IngestRawToString')]"
+			]
 		}
 	]
 }
