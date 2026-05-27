@@ -292,7 +292,7 @@ ADF Studio → Pipelines → PL_Master_RealEstate_ETL → Debug / Add Trigger
 ## 👤 Author
 
 **Meetkumar Kalpeshkumar Patel**
-Navrachana University
+Rishabh Software 
 
 <div align="center">
 
