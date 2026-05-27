@@ -1,22 +1,47 @@
 # 🏠 Real Estate Data Engineering Project
 
-> **End-to-End ETL Pipeline on Microsoft Azure**
-> Azure Data Factory • Azure SQL Database • Star Schema DWH • Power BI Ready
+<div align="center">
+
+### End-to-End ETL Pipeline on Microsoft Azure
+
+[![Azure](https://skillicons.dev/icons?i=azure)](https://azure.microsoft.com)
+[![SQL](https://skillicons.dev/icons?i=mysql)](https://www.microsoft.com/sql-server)
+[![Git](https://skillicons.dev/icons?i=git)](https://git-scm.com)
+[![GitHub](https://skillicons.dev/icons?i=github)](https://github.com)
+[![VSCode](https://skillicons.dev/icons?i=vscode)](https://code.visualstudio.com)
+[![Python](https://skillicons.dev/icons?i=python)](https://python.org)
+
+</div>
+
+---
+
+## 🛠️ Tech Stack
+
+<div align="center">
+
+| Layer | Technology | Icon |
+|-------|-----------|------|
+| ☁️ Cloud Platform | Microsoft Azure | [![Azure](https://skillicons.dev/icons?i=azure&theme=light)](https://azure.microsoft.com) |
+| 🔁 Orchestration | Azure Data Factory | [![Azure](https://skillicons.dev/icons?i=azure&theme=light)](https://azure.microsoft.com) |
+| 🗄️ Database | Azure SQL Database | [![SQL](https://skillicons.dev/icons?i=mysql&theme=light)](https://www.microsoft.com/sql-server) |
+| 📦 Raw Storage | Azure Blob Storage | [![Azure](https://skillicons.dev/icons?i=azure&theme=light)](https://azure.microsoft.com) |
+| 🔀 Version Control | Git + GitHub | [![Git](https://skillicons.dev/icons?i=git&theme=light)](https://git-scm.com) [![GitHub](https://skillicons.dev/icons?i=github&theme=light)](https://github.com) |
+| 🖊️ IDE | VS Code / SSMS | [![VSCode](https://skillicons.dev/icons?i=vscode&theme=light)](https://code.visualstudio.com) |
+| 🐍 Scripting | Python | [![Python](https://skillicons.dev/icons?i=python&theme=light)](https://python.org) |
+
+</div>
 
 ---
 
 ## 📊 Project Stats
 
-| Metric | Value |
-|--------|-------|
-| 🏘️ Listings | 12,000 |
-| 👤 Leads | 50,000 |
-| 💰 Sales | 8,456 |
-| 🏢 Properties | 8,000 |
-| 📣 Campaigns | 1,500 |
-| 🧑‍💼 Agents | 500 |
-| 🔁 ADF Pipelines | 3 |
-| ✅ Pipeline Success Rate | 100% |
+<div align="center">
+
+| 🏘️ Listings | 👤 Leads | 💰 Sales | 🏢 Properties | 📣 Campaigns | 🧑‍💼 Agents | 🔁 Pipelines |
+|:-----------:|:--------:|:--------:|:-------------:|:------------:|:-----------:|:-----------:|
+| **12,000** | **50,000** | **8,456** | **8,000** | **1,500** | **500** | **3** |
+
+</div>
 
 ---
 
@@ -25,33 +50,33 @@
 This project implements a **Medallion Architecture** (Bronze → Silver → Gold) to ingest, validate, and transform real estate data into a queryable star-schema Data Warehouse.
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                      AZURE DATA FACTORY                         │
-│                                                                 │
-│  ┌──────────────────────────────────────────────────────────┐  │
-│  │            PL_Master_RealEstate_ETL  (Orchestrator)      │  │
-│  │                                                          │  │
-│  │   ┌─────────────────────┐   ┌──────────────────────┐    │  │
-│  │   │  pl_IngestRawToStg  │──▶│ Pl_Transforma_Stg    │    │  │
-│  │   │  (8 Copy Activities)│   │  ToDwh (13 Steps)    │    │  │
-│  │   └─────────────────────┘   └──────────────────────┘    │  │
-│  └──────────────────────────────────────────────────────────┘  │
-└─────────────────────────────────────────────────────────────────┘
-         │                                   │
-         ▼                                   ▼
-┌─────────────────┐                 ┌─────────────────┐
-│  BRONZE LAYER   │                 │   GOLD LAYER    │
-│  Azure Blob     │  ──── stg.* ──▶ │  dwh.dim_*      │
-│  Storage (CSV)  │  Silver Layer   │  dwh.fact_*     │
-└─────────────────┘                 └─────────────────┘
+┌─────────────────────────────────────────────────────────────────────┐
+│                    AZURE DATA FACTORY (ADF)                         │
+│                                                                     │
+│  ┌────────────────────────────────────────────────────────────┐    │
+│  │         PL_Master_RealEstate_ETL  (Orchestrator)           │    │
+│  │                                                            │    │
+│  │  ┌──────────────────────┐    ┌──────────────────────────┐  │    │
+│  │  │  pl_IngestRawToStg   │───▶│  Pl_Transforma_StagingTo │  │    │
+│  │  │  (8 Copy Activities) │    │  dwh  (13 Activities)    │  │    │
+│  │  └──────────────────────┘    └──────────────────────────┘  │    │
+│  └────────────────────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────────────────────┘
+         │                                        │
+         ▼                                        ▼
+┌─────────────────┐     ┌──────────────┐    ┌─────────────────┐
+│  🟤 BRONZE       │     │ ⚪ SILVER     │    │  🟡 GOLD         │
+│  Azure Blob     │────▶│  stg.*       │───▶│  dwh.dim_*      │
+│  Storage (CSV)  │     │  (Validated) │    │  dwh.fact_*     │
+└─────────────────┘     └──────────────┘    └─────────────────┘
 ```
 
-### Three Layers
+### Layer Details
 
 | Layer | Storage | Tables | Purpose |
 |-------|---------|--------|---------|
-| 🟤 **Bronze** | Azure Blob Storage | CSV Files | Raw source data, no transformation |
-| ⚪ **Silver** | Azure SQL — `stg.*` | 8 Staging tables | Validated, `stg_IsValid` flagged |
+| 🟤 **Bronze** | Azure Blob Storage | 8 CSV Files | Raw source data, no transformation |
+| ⚪ **Silver** | Azure SQL — `stg.*` | 8 Staging tables | Type-cast + `stg_IsValid` validated |
 | 🟡 **Gold** | Azure SQL — `dwh.*` | 5 Dim + 4 Fact | Star-schema, BI-ready |
 
 ---
@@ -77,9 +102,9 @@ This project implements a **Medallion Architecture** (Bronze → Silver → Gold
 | `dwh.fact_Sales` | 8,456 | One row per property sale |
 | `dwh.fact_Leads` | 50,000 | One row per lead |
 | `dwh.fact_Offers` | 25,000 | One row per offer |
-| `dwh.fact_Viewings` | 0* | One row per viewing |
+| `dwh.fact_Viewings` | 0 ⚠️ | One row per viewing |
 
-> *`fact_Viewings` — 40,000 rows exist in staging but pipeline investigation pending.
+> ⚠️ `fact_Viewings` — 40,000 rows exist in staging but 0 loaded to DWH. Pipeline investigation pending.
 
 ---
 
@@ -89,7 +114,7 @@ This project implements a **Medallion Architecture** (Bronze → Silver → Gold
 
 ![Master Pipeline](Screenshots/PL_Master_RealEstate_ETL.png)
 
-Chains the two sub-pipelines sequentially. On failure, triggers `Sp_LogFailure`.
+Chains both sub-pipelines sequentially. On failure → triggers `Sp_LogFailure`.
 
 | Activity | Type | Duration | Status |
 |----------|------|----------|--------|
@@ -102,33 +127,33 @@ Chains the two sub-pipelines sequentially. On failure, triggers `Sp_LogFailure`.
 
 ![Ingest Pipeline](Screenshots/pl_IngestRawToString.png)
 
-Reads 8 CSV files from Azure Blob Storage and loads them in parallel into staging tables.
+Reads 8 CSV files from Azure Blob Storage and loads them **in parallel** into staging tables.
 
-**Copy Activities:**
-- `Copy_Agents` — 18s &nbsp;|&nbsp; `Copy_Properties` — 18s
-- `Copy_Campaigns` — 22s &nbsp;|&nbsp; `Copy_Offers` — 22s
-- `Copy_Transactions` — 22s &nbsp;|&nbsp; `Copy_Listings` — 25s
-- `Copy_Viewings` — 28s &nbsp;|&nbsp; `Copy_Leads` — 29s
+| Activity | Duration | Activity | Duration |
+|----------|----------|----------|----------|
+| Copy_Agents | 18s | Copy_Properties | 18s |
+| Copy_Campaigns | 22s | Copy_Offers | 22s |
+| Copy_Transactions | 22s | Copy_Listings | 25s |
+| Copy_Viewings | 28s | Copy_Leads | 29s |
 
 ---
 
 ### 3. `Pl_Transforma_StagingTodwh` — Silver → Gold
 
-![Transform Pipeline 1](Screenshots/Pl_Transforma_StagingTodwh_1.png)
-![Transform Pipeline 2](Screenshots/Pl_Transforma_StagingTodwh_2.png)
+![Transform Pipeline](Screenshots/Pl_Transforma_StagingTodwh_1.png)
 
-Loads dimensions in parallel → facts sequentially → row count check → log result.
+Loads dimensions in parallel → facts sequentially → row count validation → log result.
 
-| Step | Stored Procedure | Duration |
-|------|-----------------|----------|
-| 1 | Set_Start_Time | <1s |
-| 2–6 | Sp_LoadDimDate / Agents / Campaigns / Listings / Properties | 16–17s |
-| 7 | Sp_LoadFactSales | 6s |
-| 8 | Sp_LoadFactoffers | 6s |
-| 9 | Sp_LoadFactLeads | 6s |
-| 10 | LKP_RowCount (Lookup) | 17s |
-| 11 | IF_RowCountCheck | 2s |
-| 12–13 | Set_Success → Sp_LogSuccess | 6s |
+| # | Activity | Type | Duration | Status |
+|---|----------|------|----------|--------|
+| 1 | Set_Start_Time | Set variable | <1s | ✅ |
+| 2–6 | Sp_LoadDimDate / Agents / Campaigns / Listings / Properties | Stored Procedure | 16–17s | ✅ |
+| 7 | Sp_LoadFactSales | Stored Procedure | 6s | ✅ |
+| 8 | Sp_LoadFactoffers | Stored Procedure | 6s | ✅ |
+| 9 | Sp_LoadFactLeads | Stored Procedure | 6s | ✅ |
+| 10 | LKP_RowCount | Lookup | 17s | ✅ |
+| 11 | IF_RowCountCheck | If Condition | 2s | ✅ |
+| 12–13 | Set_Success → Sp_LogSuccess | Variable / Stored Procedure | 6s | ✅ |
 
 ---
 
@@ -137,10 +162,21 @@ Loads dimensions in parallel → facts sequentially → row count check → log 
 ### A1 — Staging vs DWH Row Counts
 ![Row Count Check](Screenshots/Staging_Row_Vs_DWH_Row_Counts.png)
 
-### A2 — Staging Invalid Rows (All Zero)
+| Table | Staging | DWH | Match |
+|-------|---------|-----|-------|
+| Agents | 500 | 500 | ✅ |
+| Properties | 8,000 | 8,000 | ✅ |
+| Listings | 12,000 | 12,000 | ✅ |
+| Leads | 50,000 | 50,000 | ✅ |
+| Viewings | 40,000 | 0 | ⚠️ |
+| Offers | 25,000 | 25,000 | ✅ |
+| Transactions (Sales) | 8,456 | 8,456 | ✅ |
+| Campaigns | 1,500 | 1,500 | ✅ |
+
+### A2 — Staging Invalid Rows (All Zero ✅)
 ![Invalid Rows](Screenshots/Staging_invalid_rows_summary.png)
 
-### A3 — NULL Check on Critical Fact Columns (All Zero)
+### A3 — NULL Check on Critical Fact Columns (All Zero ✅)
 ![Null Check](Screenshots/NULL_check_on_critical_DWH_fact_columns.png)
 
 | Check | Fail Count | Result |
@@ -165,12 +201,11 @@ Loads dimensions in parallel → facts sequentially → row count check → log 
 ![Property Inventory](Screenshots/Property_Inventory___Pricing_Trends.png)
 
 ### B4 — Campaign ROI & Lead Conversion
-
 ![Campaign ROI](Screenshots/Campaign_ROI___Lead_Conversion.png)
 
 | Channel | Campaigns | Total Leads | Converted Sales | ROI % |
 |---------|-----------|-------------|-----------------|-------|
-| 📱 Social Ads | 348 | 1,337 | 245 | **5,753%** |
+| 📱 Social Ads | 348 | 1,337 | 245 | **5,753%** 🥇 |
 | 🌐 Portal Featured | 719 | 2,856 | 473 | 4,560% |
 | 📋 Offline | 74 | 317 | 53 | 4,333% |
 | 📧 Email Blast | 304 | 1,260 | 220 | 4,202% |
@@ -203,7 +238,7 @@ All recent runs completed with **zero errors**:
  ┣ 📂 pipeline/
  ┃  ┣ 📄 PL_Master_RealEstate_ETL.json
  ┃  ┣ 📄 pl_IngestRawToString.json
- ┃  └ 📄 Pl_Transforma_StagingTodwh.json
+ ┃  └─ 📄 Pl_Transforma_StagingTodwh.json
  ┣ 📂 StoredProcedures/
  ┃  ┣ 📄 Sp_LoadDimDate.sql
  ┃  ┣ 📄 Sp_LoadDimAgents.sql
@@ -214,62 +249,57 @@ All recent runs completed with **zero errors**:
  ┃  ┣ 📄 Sp_LoadFactoffers.sql
  ┃  ┣ 📄 Sp_LoadFactLeads.sql
  ┃  ┣ 📄 Sp_LogSuccess.sql
- ┃  └ 📄 Sp_LogFailure.sql
+ ┃  └─ 📄 Sp_LogFailure.sql
  ┣ 📂 Datasets/
  ┃  ┣ 📂 Blob_csv/          ← 8 CSV source datasets
- ┃  └ 📂 SQL_Datasets/      ← 8 SQL staging datasets
+ ┃  └─ 📂 SQL_Datasets/      ← 8 SQL staging datasets
  ┣ 📂 Screenshots/          ← Pipeline & query evidence
- ┣ 📄 SQLQuery1.sql         ← All audit + analytical queries
- ┗ 📄 README.md
+ ┣ 📄 SQLQuery1.sql         ← All audit + analytical queries (Sections A & B)
+ └─ 📄 README.md
 ```
-
----
-
-## 🛠️ Technology Stack
-
-| Component | Technology |
-|-----------|------------|
-| Orchestration | Azure Data Factory (ADF) |
-| Raw Storage | Azure Blob Storage (CSV) |
-| Database | Azure SQL Database |
-| Transformation | SQL Stored Procedures |
-| Monitoring | `stg.PipelineLog` table |
-| Schema | Star Schema (Kimball) |
-| BI Layer | Power BI (query-ready) |
 
 ---
 
 ## 🚀 How to Run
 
-1. **Clone the repo**
-   ```bash
-   git clone https://github.com/001MEET/ADF_Realrealestate_Deta_Engineering-_Project.git
-   ```
+**1. Clone the repo**
+```bash
+git clone https://github.com/001MEET/ADF_Realrealestate_Deta_Engineering-_Project.git
+cd ADF_Realrealestate_Deta_Engineering-_Project
+```
 
-2. **Setup Azure SQL Database**
-   - Create database `db_realestate_dwh`
-   - Run schema scripts to create `stg.*` and `dwh.*` tables
-   - Deploy all Stored Procedures from `/StoredProcedures/`
+**2. Setup Azure SQL Database**
+- Create database `db_realestate_dwh`
+- Run schema scripts to create `stg.*` and `dwh.*` tables
+- Deploy all stored procedures from `/StoredProcedures/`
 
-3. **Setup Azure Blob Storage**
-   - Upload CSV source files to `Blob_csv` container
-   - Update linked service connection strings in ADF
+**3. Setup Azure Blob Storage**
+- Upload CSV source files to a `Blob_csv` container
+- Update linked service connection strings in ADF
 
-4. **Import ADF Pipelines**
-   - Import JSON files from `/pipeline/` into your Azure Data Factory
-   - Update dataset linked services to point to your resources
+**4. Import ADF Pipelines**
+- Import JSON files from `/pipeline/` into your Azure Data Factory instance
+- Update dataset linked services to point to your resources
 
-5. **Run the Master Pipeline**
-   - Trigger `PL_Master_RealEstate_ETL` in ADF
-   - Monitor via `stg.PipelineLog` table
+**5. Run the Master Pipeline**
+```
+ADF Studio → Pipelines → PL_Master_RealEstate_ETL → Debug / Add Trigger
+```
+- Monitor progress via `SELECT * FROM stg.PipelineLog ORDER BY StartTime DESC`
 
 ---
 
 ## 👤 Author
 
 **Meetkumar Kalpeshkumar Patel**
-rishabh Software 
-📧 meetkpatel04@gmail.com
+Navrachana University
+
+<div align="center">
+
+[![GitHub](https://skillicons.dev/icons?i=github)](https://github.com/001MEET)
+[![Azure](https://skillicons.dev/icons?i=azure)](https://azure.microsoft.com)
+
+</div>
 
 ---
 
@@ -279,4 +309,10 @@ This project is for academic and portfolio purposes.
 
 ---
 
-> ⭐ If you found this project helpful, please give it a star!
+<div align="center">
+
+⭐ **If you found this project helpful, please give it a star!** ⭐
+
+[![GitHub stars](https://img.shields.io/github/stars/001MEET/ADF_Realrealestate_Deta_Engineering-_Project?style=social)](https://github.com/001MEET/ADF_Realrealestate_Deta_Engineering-_Project)
+
+</div>
